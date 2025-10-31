@@ -84,6 +84,8 @@ python train_resnet18.py \
   --num-workers 2
 ```
 
+**Note:** Default batch size is 64, but 32 is recommended for CPU training.
+
 #### GoogLeNet on VinaFood21
 
 ```bash
@@ -158,9 +160,11 @@ python evaluate.py \
 
 Available model types:
 - `lenet`: LeNet for MNIST
-- `googlenet`: GoogLeNet for VinaFood21
+- `googlenet`: GoogLeNet for VinaFood21  
 - `resnet18`: ResNet-18 for VinaFood21
 - `pretrained_resnet50`: Pretrained ResNet-50 for VinaFood21
+
+**Note:** Model type arguments use lowercase names (e.g., `googlenet`, not `GoogLeNet`).
 
 ## GPU Training
 
