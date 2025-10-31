@@ -40,6 +40,34 @@ Extract the dataset and note the paths to the `train` and `test` directories.
 
 ## Usage
 
+### Training Modes
+
+#### CPU Training
+All training scripts automatically detect available hardware. To force CPU-only training (even if GPUs are available), use the `CUDA_VISIBLE_DEVICES=""` environment variable:
+
+```bash
+CUDA_VISIBLE_DEVICES="" python train_lenet.py --data-dir ./data/mnist --epochs 40
+```
+
+This is useful for:
+- Testing on machines without GPUs
+- Debugging CPU-specific issues
+- Running on CPU-only servers or containers
+
+#### Test Run Mode
+For quick testing and debugging, use the `--test-run` flag to train on a limited subset of the data:
+
+```bash
+python train_lenet.py --data-dir ./data/mnist --test-run --test-samples 100 --epochs 2
+```
+
+The `--test-run` flag:
+- Limits training dataset to `--test-samples` samples (default: 100)
+- Limits test dataset to half of `--test-samples` samples
+- Useful for quick validation of code changes
+- Recommended to use with reduced epochs (e.g., `--epochs 2`)
+- Can be combined with CPU training for fast local testing
+
 ### Automatic Device Detection
 
 All training scripts automatically detect and use available hardware:
@@ -62,10 +90,30 @@ python train_lenet.py \
     --lr 0.001
 ```
 
+**CPU-only training (force CPU even if GPU available):**
+```bash
+CUDA_VISIBLE_DEVICES="" python train_lenet.py \
+    --data-dir ./data/mnist \
+    --batch-size 256 \
+    --epochs 40 \
+    --lr 0.001
+```
+
+**Quick test run (limited dataset for testing):**
+```bash
+python train_lenet.py \
+    --data-dir ./data/mnist \
+    --test-run \
+    --test-samples 100 \
+    --epochs 2 \
+    --batch-size 64
+```
+
 Key features:
 - Uses Adam optimizer
 - Evaluates with precision, recall, and F1-macro metrics
 - Input size: 32x32
+- `--test-run`: Limits dataset size for quick testing (uses `--test-samples` for training, half for testing)
 
 #### Bài 2: Train GoogLeNet on VinaFood21
 
@@ -78,12 +126,34 @@ python train_googlenet.py \
     --lr 0.001
 ```
 
+**CPU-only training (force CPU even if GPU available):**
+```bash
+CUDA_VISIBLE_DEVICES="" python train_googlenet.py \
+    --train-dir /path/to/vinafood21/train \
+    --test-dir /path/to/vinafood21/test \
+    --batch-size 32 \
+    --epochs 30 \
+    --lr 0.001
+```
+
+**Quick test run (limited dataset for testing):**
+```bash
+python train_googlenet.py \
+    --train-dir /path/to/vinafood21/train \
+    --test-dir /path/to/vinafood21/test \
+    --test-run \
+    --test-samples 100 \
+    --epochs 2 \
+    --batch-size 16
+```
+
 Key features:
 - First convolution layer has padding=3
 - All MaxPooling layers use ceil_mode=True
 - Uses Adam optimizer
 - Evaluates with precision, recall, and F1 metrics
 - Input size: 224x224
+- `--test-run`: Limits dataset size for quick testing (uses `--test-samples` for training, half for testing)
 
 #### Bài 3: Train ResNet-18 on VinaFood21
 
@@ -96,11 +166,33 @@ python train_resnet18.py \
     --lr 0.001
 ```
 
+**CPU-only training (force CPU even if GPU available):**
+```bash
+CUDA_VISIBLE_DEVICES="" python train_resnet18.py \
+    --train-dir /path/to/vinafood21/train \
+    --test-dir /path/to/vinafood21/test \
+    --batch-size 64 \
+    --epochs 30 \
+    --lr 0.001
+```
+
+**Quick test run (limited dataset for testing):**
+```bash
+python train_resnet18.py \
+    --train-dir /path/to/vinafood21/train \
+    --test-dir /path/to/vinafood21/test \
+    --test-run \
+    --test-samples 100 \
+    --epochs 2 \
+    --batch-size 16
+```
+
 Key features:
 - MaxPooling layers between residual blocks (kernel=3, stride=2, padding=0)
 - Uses Adam optimizer
 - Evaluates with precision, recall, and F1 metrics
 - Input size: 224x224
+- `--test-run`: Limits dataset size for quick testing (uses `--test-samples` for training, half for testing)
 
 #### Bài 4: Fine-tune Pretrained ResNet50 on VinaFood21
 
@@ -113,12 +205,34 @@ python train_pretrained_resnet50.py \
     --lr 1e-4
 ```
 
+**CPU-only training (force CPU even if GPU available):**
+```bash
+CUDA_VISIBLE_DEVICES="" python train_pretrained_resnet50.py \
+    --train-dir /path/to/vinafood21/train \
+    --test-dir /path/to/vinafood21/test \
+    --batch-size 32 \
+    --epochs 20 \
+    --lr 1e-4
+```
+
+**Quick test run (limited dataset for testing):**
+```bash
+python train_pretrained_resnet50.py \
+    --train-dir /path/to/vinafood21/train \
+    --test-dir /path/to/vinafood21/test \
+    --test-run \
+    --test-samples 100 \
+    --epochs 2 \
+    --batch-size 16
+```
+
 Key features:
 - Uses pretrained ResNet50 from HuggingFace (microsoft/resnet-50)
 - Fine-tuning with Adam optimizer
 - Lower learning rate (1e-4) for transfer learning
 - Evaluates with precision, recall, and F1 metrics
 - Input size: 224x224
+- `--test-run`: Limits dataset size for quick testing (uses `--test-samples` for training, half for testing)
 
 ### Multi-GPU Training (Distributed Data Parallel)
 
